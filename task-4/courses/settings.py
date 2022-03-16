@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
 from pathlib import Path
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -47,12 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters',
     'rest_framework',
     'rest_framework_swagger',
-    'djoser',
     'classroom',
-
+    'djoser',
 ]
 
 REST_FRAMEWORK = {
@@ -106,11 +103,10 @@ WSGI_APPLICATION = 'courses.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'course_database',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': '5645',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'PASSWORD': 'hunter2',
+        'HOST':  'db',
     }
 }
 
@@ -133,6 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING_CONFIG = None
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -159,3 +156,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'classroom.User'
+
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
