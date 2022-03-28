@@ -7,6 +7,29 @@ services:
             - .:/app
         links:
             - db
+        depends_on:
+            - redis
+
+    redis:
+        image: redis:alpine
+
+    celery:
+        build: ./task-4/courses
+        command: celery worker —app=courses —loglevel=info
+        volumes:
+            - .:/app
+        depends_on:
+            - web
+            - redis
+
+    celery-beat:
+        build: ./task-4
+        command: celery worker —app=corses beat —loglevel=info
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+            - redis
 
     db:
         image: "postgres:9.6"
