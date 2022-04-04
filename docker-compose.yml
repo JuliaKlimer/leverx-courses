@@ -7,29 +7,6 @@ services:
             - .:/app
         links:
             - db
-        depends_on:
-            - redis
-
-    redis:
-        image: redis:alpine
-
-    celery:
-        build: ./task-4/courses
-        command: celery worker —app=courses —loglevel=info
-        volumes:
-            - .:/app
-        depends_on:
-            - web
-            - redis
-
-    celery-beat:
-        build: ./task-4
-        command: celery worker —app=corses beat —loglevel=info
-        volumes:
-            - .:/app
-        depends_on:
-            - db
-            - redis
 
     db:
         image: "postgres:9.6"
@@ -37,3 +14,36 @@ services:
             - "5432:5432"
         environment:
             POSTGRES_PASSWORD: hunter2
+
+    redis:
+      image: redis:alpine
+
+    celery:
+        restart: always
+        build: .
+        command: celery --A courses.tasks worker -l info
+        volumes:
+            - .:/app
+        environment:
+            - DB_HOST=db
+            - DB_NAME=web
+            - DB_USER=postgres
+            - DB_PASS=hunter2
+        depends_on:
+            - web
+            - redis
+            - db
+
+    celery-beat:
+        build: .
+        command: celery --A courses.tasks beat -l info
+        volumes:
+            - .:/app
+        environment:
+            - DB_HOST=db
+            - DB_NAME=web
+            - DB_USER=postgres
+            - DB_PASS=hunter2
+        depends_on:
+            - db
+            - redis
